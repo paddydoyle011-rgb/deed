@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deed - Clean Up. Earn Points.</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, sans-serif;
+        }
+
+        body{
+            background:#f4f6f8;
+            color:#333;
+        }
+
+        header{
+            background:#2ecc71;
+            color:white;
+            text-align:center;
+            padding:20px;
+        }
+
+        .container{
+            max-width:900px;
+            margin:auto;
+            padding:20px;
+        }
+
+        .card{
+            background:white;
+            padding:20px;
+            margin-bottom:20px;
+            border-radius:12px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2{
+            margin-bottom:15px;
+        }
+
+        input[type="text"],
+        input[type="file"]{
+            width:100%;
+            padding:10px;
+            margin:10px 0;
+        }
+
+        button{
+            background:#2ecc71;
+            color:white;
+            border:none;
+            padding:12px 20px;
+            border-radius:8px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#27ae60;
+        }
+
+        #pointsDisplay{
+            font-size:24px;
+            font-weight:bold;
+            color:#27ae60;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th, td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            text-align:left;
+        }
+
+        th{
+            background:#2ecc71;
+            color:white;
+        }
+
+        .rank{
+            font-weight:bold;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🌎 Deed</h1>
+    <p>Pick Up Trash. Earn Points. Help Your Town.</p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Your Profile</h2>
+
+        <label>Name</label>
+        <input type="text" id="username" placeholder="Enter your name">
+
+        <p>Total Points:</p>
+        <p id="pointsDisplay">0</p>
+    </div>
+
+    <div class="card">
+        <h2>Submit Cleanup Video</h2>
+
+        <input type="file" id="videoUpload" accept="video/*">
+
+        <button onclick="submitVideo()">
+            Upload Video (+100 Points)
+        </button>
+
+        <p id="uploadMessage"></p>
+    </div>
+
+    <div class="card">
+        <h2>🏆 Town Leaderboard</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+
+            <tbody id="leaderboardBody">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+
+let currentUserPoints = 0;
+
+let leaderboard = [
+    {name: "Emma", points: 900},
+    {name: "Liam", points: 700},
+    {name: "Sophia", points: 600},
+    {name: "Noah", points: 450}
+];
+
+function submitVideo(){
+
+    const username =
+        document.getElementById("username").value;
+
+    const video =
+        document.getElementById("videoUpload").files[0];
+
+    if(username === ""){
+        alert("Please enter your name.");
+        return;
+    }
+
+    if(!video){
+        alert("Please select a video.");
+        return;
+    }
+
+    currentUserPoints += 100;
+
+    document.getElementById("pointsDisplay").innerText =
+        currentUserPoints;
+
+    const existingUser =
+        leaderboard.find(user => user.name === username);
+
+    if(existingUser){
+        existingUser.points += 100;
+    }
+    else{
+        leaderboard.push({
+            name: username,
+            points: currentUserPoints
+        });
+    }
+
+    updateLeaderboard();
+
+    document.getElementById("uploadMessage").innerText =
+        "Video submitted successfully! +100 points earned.";
+}
+
+function updateLeaderboard(){
+
+    leaderboard.sort((a,b) => b.points - a.points);
+
+    const table =
+        document.getElementById("leaderboardBody");
+
+    table.innerHTML = "";
+
+    leaderboard.forEach((user,index)=>{
+
+        table.innerHTML += `
+            <tr>
+                <td class="rank">#${index + 1}</td>
+                <td>${user.name}</td>
+                <td>${user.points}</td>
+            </tr>
+        `;
+    });
+}
+
+updateLeaderboard();
+
+</script>
+
+</body>
+</html>
